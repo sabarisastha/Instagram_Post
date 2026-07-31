@@ -1,0 +1,340 @@
+{
+  "name": "DailyMotivation",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "days"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -240,
+        0
+      ],
+      "id": "6b65804b-cfa2-4557-8d58-8920e1a85934",
+      "name": "Schedule Trigger"
+    },
+    {
+      "parameters": {
+        "jsCode": "// ============================================================\n// DAILY MOTIVATION QUOTE ENGINE\n// 120 unique hand-crafted motivational quotes for 365-day rotation\n// Each quote has: imageText (poster title) + caption (Instagram post)\n// ============================================================\n\nconst quotes = [\n  { imageText: 'EMBRACE THE GRIND', caption: 'Success is not a destination, it is a relentless pursuit. Show up every single day and let your work speak for itself.\\n\\n#Motivation #Grind #Success #Consistency #v2s' },\n  { imageText: 'STAY RELENTLESS', caption: 'The world rewards those who refuse to quit. Stay hungry, stay relentless, and keep pushing beyond your limits.\\n\\n#Relentless #NeverQuit #Motivation #v2s' },\n  { imageText: 'RISE ABOVE', caption: 'Your circumstances do not define you. Rise above every obstacle and prove that greatness lives within you.\\n\\n#RiseAbove #Greatness #Mindset #v2s' },\n  { imageText: 'OWN YOUR DAY', caption: 'Champions are made in the hours nobody sees. Take control of your morning and own every minute of your day.\\n\\n#OwnYourDay #Champion #Morning #v2s' },\n  { imageText: 'NEVER SETTLE', caption: 'Comfort zones are where dreams go to die. Push beyond and discover your true potential waiting on the other side.\\n\\n#NeverSettle #Ambition #NoLimits #v2s' },\n  { imageText: 'BE UNSTOPPABLE', caption: 'When you decide nothing can stop you, nothing will. Commit fully to your vision and become unstoppable.\\n\\n#Unstoppable #Vision #Commit #v2s' },\n  { imageText: 'GRIND IN SILENCE', caption: 'Let your results speak louder than your words. The hustle is silent but the impact is undeniable.\\n\\n#GrindInSilence #Hustle #Results #v2s' },\n  { imageText: 'DISCIPLINE WINS', caption: 'Motivation fades but discipline endures. Build habits that outlast your moods and watch your life transform.\\n\\n#Discipline #Habits #Consistency #v2s' },\n  { imageText: 'TRUST THE PROCESS', caption: 'Great things take time. Trust the process, stay patient, and let every small step compound into massive results.\\n\\n#TrustTheProcess #Patience #Growth #v2s' },\n  { imageText: 'FEAR IS FUEL', caption: 'Do not let fear paralyze you. Channel it into fuel that propels you toward the life you deserve.\\n\\n#FearIsFuel #Courage #Action #v2s' },\n  { imageText: 'BUILD YOUR EMPIRE', caption: 'Nobody is going to build your dream for you. Brick by brick, day by day, build an empire that stands the test of time.\\n\\n#BuildYourEmpire #Entrepreneur #Dream #v2s' },\n  { imageText: 'OUTWORK EVERYONE', caption: 'Talent is common but effort is rare. Be the person who outworks everyone in the room, every single time.\\n\\n#Outwork #Effort #HardWork #v2s' },\n  { imageText: 'STAY FOCUSED', caption: 'Distractions will always compete for your attention. Stay focused on your goals and let nothing derail your mission.\\n\\n#StayFocused #Goals #Mission #v2s' },\n  { imageText: 'PROVE THEM WRONG', caption: 'The best revenge is massive success. Let the doubters fuel your fire and prove every single one of them wrong.\\n\\n#ProveThemWrong #Success #Fire #v2s' },\n  { imageText: 'START NOW', caption: 'The perfect moment does not exist. Start now, start messy, start scared — just start and figure it out along the way.\\n\\n#StartNow #Action #NoExcuses #v2s' },\n  { imageText: 'EARN YOUR REST', caption: 'Rest is a reward, not a routine. Work so hard that your rest feels earned and your sleep feels peaceful.\\n\\n#EarnYourRest #Work #Reward #v2s' },\n  { imageText: 'BREAK YOUR LIMITS', caption: 'You are stronger than you think. Push past every barrier your mind creates and discover what you are truly capable of.\\n\\n#BreakYourLimits #Strength #Capable #v2s' },\n  { imageText: 'KEEP MOVING', caption: 'Progress is progress, no matter how slow. Keep moving forward and never look back at what tried to break you.\\n\\n#KeepMoving #Progress #Forward #v2s' },\n  { imageText: 'CHOOSE GROWTH', caption: 'Every day you have two choices: stay comfortable or choose growth. Winners always choose growth, even when it hurts.\\n\\n#ChooseGrowth #Winners #Mindset #v2s' },\n  { imageText: 'PAIN IS TEMPORARY', caption: 'Pain is temporary but quitting lasts forever. Push through the struggle because the reward is on the other side.\\n\\n#PainIsTemporary #NeverQuit #Struggle #v2s' },\n  { imageText: 'DOMINATE TODAY', caption: 'Yesterday is gone and tomorrow is not promised. Dominate today with everything you have got.\\n\\n#DominateToday #Present #AllIn #v2s' },\n  { imageText: 'SILENT AMBITION', caption: 'Real ambition does not announce itself. It works quietly in the dark and lets success make all the noise.\\n\\n#SilentAmbition #Quiet #Success #v2s' },\n  { imageText: 'NO SHORTCUTS', caption: 'The path to greatness has no shortcuts. Every step you take builds the foundation for something legendary.\\n\\n#NoShortcuts #Greatness #Foundation #v2s' },\n  { imageText: 'HUNGER NEVER SLEEPS', caption: 'Stay hungry for growth, for knowledge, for greatness. A hungry mind is the most powerful force in the universe.\\n\\n#HungerNeverSleeps #Growth #Knowledge #v2s' },\n  { imageText: 'EXECUTE DAILY', caption: 'Ideas without action are just dreams. Execute daily, refine constantly, and watch your vision become reality.\\n\\n#ExecuteDaily #Action #Vision #v2s' },\n  { imageText: 'ZERO EXCUSES', caption: 'Excuses build walls. Results build bridges. Choose which one you want to spend your time constructing.\\n\\n#ZeroExcuses #Results #NoExcuses #v2s' },\n  { imageText: 'BECOME LEGENDARY', caption: 'Ordinary is a choice. Every day you wake up, you have the power to choose extraordinary. Become legendary.\\n\\n#BecomeLegendary #Extraordinary #Power #v2s' },\n  { imageText: 'CONTROL YOUR MIND', caption: 'Your mind is either your greatest weapon or your biggest obstacle. Train it, discipline it, and control it.\\n\\n#ControlYourMind #MentalStrength #Discipline #v2s' },\n  { imageText: 'WIN THE MORNING', caption: 'Win the morning and you win the day. Your first hour sets the tone for everything that follows.\\n\\n#WinTheMorning #MorningRoutine #DailyWin #v2s' },\n  { imageText: 'SACRIFICE TODAY', caption: 'What you sacrifice today determines what you celebrate tomorrow. Give up comfort now for glory later.\\n\\n#SacrificeToday #Delayed #Glory #v2s' },\n  { imageText: 'BURN THE BOATS', caption: 'When retreat is not an option, you fight with everything you have. Burn the boats and commit fully.\\n\\n#BurnTheBoats #Commitment #AllIn #v2s' },\n  { imageText: 'RESPECT THE HUSTLE', caption: 'Behind every success is a story of relentless hustle. Respect the grind and honor the journey.\\n\\n#RespectTheHustle #Grind #Journey #v2s' },\n  { imageText: 'RAISE THE STANDARD', caption: 'Stop competing with others and start competing with yourself. Raise your own standard every single day.\\n\\n#RaiseTheStandard #SelfCompetition #Level #v2s' },\n  { imageText: 'THINK BIGGER', caption: 'Your potential is limitless. The only thing holding you back is the size of your thinking. Think bigger, dream bolder.\\n\\n#ThinkBigger #Potential #DreamBig #v2s' },\n  { imageText: 'CONQUER FEAR', caption: 'Fear does not disappear — you simply learn to move through it. Conquer your fears one brave step at a time.\\n\\n#ConquerFear #Brave #Courage #v2s' },\n  { imageText: 'WORK IN PROGRESS', caption: 'You are not behind. You are not broken. You are a work in progress, and that is a beautiful thing.\\n\\n#WorkInProgress #SelfGrowth #Beautiful #v2s' },\n  { imageText: 'LEVEL UP DAILY', caption: 'Become one percent better every day. Small improvements compound into extraordinary transformations over time.\\n\\n#LevelUp #OnePercent #Compound #v2s' },\n  { imageText: 'FAIL FORWARD', caption: 'Failure is not the opposite of success. It is the pathway to it. Fall down seven times, stand up eight.\\n\\n#FailForward #Resilience #KeepGoing #v2s' },\n  { imageText: 'BELIEVE AND BECOME', caption: 'What you believe, you become. Plant seeds of confidence and watch them grow into a forest of achievement.\\n\\n#BelieveAndBecome #Confidence #Achievement #v2s' },\n  { imageText: 'PROTECT YOUR ENERGY', caption: 'Not every battle deserves your energy. Choose wisely where you invest your time, focus, and effort.\\n\\n#ProtectYourEnergy #Focus #Wisdom #v2s' },\n  { imageText: 'OBSESSED WITH GROWTH', caption: 'Be so obsessed with your own growth that you have no time to judge, compare, or compete with anyone else.\\n\\n#ObsessedWithGrowth #SelfImprovement #Focus #v2s' },\n  { imageText: 'CREATE YOUR LEGACY', caption: 'A legacy is not built in a day. It is built in the daily decisions to show up, put in the work, and never give up.\\n\\n#CreateYourLegacy #Legacy #DailyWork #v2s' },\n  { imageText: 'MASTER YOURSELF', caption: 'Before you conquer the world, conquer yourself. Self-mastery is the foundation of all great achievements.\\n\\n#MasterYourself #SelfMastery #Foundation #v2s' },\n  { imageText: 'DEFY THE ODDS', caption: 'Statistics are for the average. You were not born to be a statistic. Defy every odd stacked against you.\\n\\n#DefyTheOdds #Extraordinary #Fighter #v2s' },\n  { imageText: 'RESULTS OVER WORDS', caption: 'Talk less, do more. Let your results create the noise that your words never could.\\n\\n#ResultsOverWords #DoMore #Prove #v2s' },\n  { imageText: 'CHASE EXCELLENCE', caption: 'Do not chase perfection — chase excellence. Perfection paralyzes but excellence propels you forward.\\n\\n#ChaseExcellence #Excellence #Forward #v2s' },\n  { imageText: 'BUILT DIFFERENT', caption: 'You were not made to fit in. You were made to stand out, to break molds, and to redefine what is possible.\\n\\n#BuiltDifferent #StandOut #Unique #v2s' },\n  { imageText: 'EARN RESPECT', caption: 'Respect is never demanded. It is earned through consistent action, integrity, and an unwavering commitment to your craft.\\n\\n#EarnRespect #Integrity #Craft #v2s' },\n  { imageText: 'STAY DANGEROUS', caption: 'Stay humble but stay dangerous. Be kind but never let anyone mistake your kindness for weakness.\\n\\n#StayDangerous #Humble #Powerful #v2s' },\n  { imageText: 'EVOLVE OR REPEAT', caption: 'If you do not change, nothing changes. Evolve beyond who you were yesterday or be doomed to repeat the same cycle.\\n\\n#EvolveOrRepeat #Change #Transform #v2s' },\n  { imageText: 'VISION OVER DOUBT', caption: 'Doubt kills more dreams than failure ever will. Hold your vision close and let it guide you through the darkest nights.\\n\\n#VisionOverDoubt #DreamBig #Faith #v2s' },\n  { imageText: 'MAKE IT HAPPEN', caption: 'Waiting for the right moment is an excuse. The right moment is now. Make it happen with whatever you have.\\n\\n#MakeItHappen #Now #NoExcuses #v2s' },\n  { imageText: 'SELF MADE', caption: 'No one is coming to save you. Accept that truth and become the hero of your own story.\\n\\n#SelfMade #Hero #OwnStory #v2s' },\n  { imageText: 'HARD WORK PAYS', caption: 'Every drop of sweat, every late night, every sacrifice — it all pays off. Hard work always finds a way to reward you.\\n\\n#HardWorkPays #Sacrifice #Reward #v2s' },\n  { imageText: 'DARE TO BEGIN', caption: 'The hardest part of any journey is the first step. Dare to begin, and the rest will follow.\\n\\n#DareToBegin #FirstStep #Journey #v2s' },\n  { imageText: 'POWER OF PATIENCE', caption: 'Patience is not passive waiting. It is active endurance while you work toward something extraordinary.\\n\\n#PowerOfPatience #Endurance #Extraordinary #v2s' },\n  { imageText: 'MOMENTUM IS KING', caption: 'Start small but stay consistent. Momentum is the most powerful force — once it builds, nothing can stop you.\\n\\n#Momentum #Consistent #Powerful #v2s' },\n  { imageText: 'FORGE YOUR PATH', caption: 'Do not follow the crowd. Forge your own path through the wilderness and create a trail others will want to follow.\\n\\n#ForgeYourPath #Leader #TrailBlazer #v2s' },\n  { imageText: 'REJECT MEDIOCRITY', caption: 'Mediocrity is a disease that spreads when you stop demanding more from yourself. Reject it with every fiber of your being.\\n\\n#RejectMediocrity #DemandMore #Excellence #v2s' },\n  { imageText: 'COMMIT OR QUIT', caption: 'Half-hearted effort produces half-hearted results. Either commit with everything you have or do not bother at all.\\n\\n#CommitOrQuit #AllIn #FullEffort #v2s' },\n  { imageText: 'STRONGER EVERY DAY', caption: 'You are not the same person you were yesterday. Every challenge you face makes you stronger, wiser, and more resilient.\\n\\n#StrongerEveryDay #Resilient #Wiser #v2s' },\n  { imageText: 'SILENCE THE NOISE', caption: 'In a world full of noise, clarity comes to those who can silence the distractions and focus on what truly matters.\\n\\n#SilenceTheNoise #Clarity #Focus #v2s' },\n  { imageText: 'LEGACY IN PROGRESS', caption: 'You are building something bigger than yourself. Every day is another brick in the wall of your legacy.\\n\\n#LegacyInProgress #Building #Purpose #v2s' },\n  { imageText: 'MIND OVER MATTER', caption: 'Your body will quit a thousand times before your mind does. Train your mind to be tougher than any challenge.\\n\\n#MindOverMatter #MentalToughness #Strong #v2s' },\n  { imageText: 'KEEP CLIMBING', caption: 'The mountain does not care about your excuses. Keep climbing, keep pushing, and the summit will be yours.\\n\\n#KeepClimbing #Summit #Mountain #v2s' },\n  { imageText: 'KING MENTALITY', caption: 'Carry yourself with dignity, work with purpose, and lead with integrity. A king mentality is built, not born.\\n\\n#KingMentality #Dignity #Purpose #v2s' },\n  { imageText: 'REWRITE YOUR STORY', caption: 'Your past does not define your future. Pick up the pen and rewrite your story into something extraordinary.\\n\\n#RewriteYourStory #NewChapter #Future #v2s' },\n  { imageText: 'INVEST IN YOURSELF', caption: 'The best investment you will ever make is in yourself. Your skills, your health, your mind — these are priceless assets.\\n\\n#InvestInYourself #Skills #Health #v2s' },\n  { imageText: 'STAY SHARP', caption: 'A dull blade is useless no matter how strong the warrior. Keep learning, keep evolving, and stay razor sharp.\\n\\n#StaySharp #Learning #Evolving #v2s' },\n  { imageText: 'EMBRACE DISCOMFORT', caption: 'Growth lives on the other side of discomfort. Learn to love the struggle because that is where transformation happens.\\n\\n#EmbraceDiscomfort #Growth #Transformation #v2s' },\n  { imageText: 'DEEP FOCUS', caption: 'Multitasking is the enemy of mastery. Go deep, not wide. Give one thing your absolute best.\\n\\n#DeepFocus #Mastery #OneThingAtATime #v2s' },\n  { imageText: 'WAKE UP HUNGRY', caption: 'Every morning is a new opportunity to dominate. Wake up with hunger in your eyes and fire in your belly.\\n\\n#WakeUpHungry #Morning #Dominate #v2s' },\n  { imageText: 'POWER MOVES ONLY', caption: 'Stop wasting energy on things that do not move you forward. Every action should be a power move toward your goals.\\n\\n#PowerMovesOnly #Strategy #Goals #v2s' },\n  { imageText: 'GRIT OVER TALENT', caption: 'Talent opens the door but grit keeps you in the room. Be the person who never gives up no matter what.\\n\\n#GritOverTalent #Perseverance #NeverGiveUp #v2s' },\n  { imageText: 'BUILD IN SILENCE', caption: 'Do not announce your moves. Build in silence, grow in private, and let your success be the announcement.\\n\\n#BuildInSilence #Private #Announcement #v2s' },\n  { imageText: 'OBSESS OR FORGET', caption: 'If you are not obsessed with your goal, you are not serious about it. Obsess over your craft or forget about the dream.\\n\\n#ObsessOrForget #Craft #Serious #v2s' },\n  { imageText: 'WARRIOR MINDSET', caption: 'Warriors are not born on easy days. They are forged in fire, shaped by struggle, and hardened by adversity.\\n\\n#WarriorMindset #Forged #Adversity #v2s' },\n  { imageText: 'SHOW UP DAILY', caption: 'Success is not about big moments. It is about showing up daily with small, consistent actions that compound over time.\\n\\n#ShowUpDaily #Consistency #Compound #v2s' },\n  { imageText: 'UNBREAKABLE SPIRIT', caption: 'They can break your plans but they cannot break your spirit. An unbreakable spirit will always find a way to win.\\n\\n#UnbreakableSpirit #Resilience #Win #v2s' },\n  { imageText: 'TIME IS WEALTH', caption: 'Money can be earned back. Time cannot. Invest every second wisely because it is your most valuable asset.\\n\\n#TimeIsWealth #Invest #ValueTime #v2s' },\n  { imageText: 'LOCKED IN', caption: 'When you are locked in on your goals, distractions become invisible. Pure focus creates pure results.\\n\\n#LockedIn #PureFocus #Results #v2s' },\n  { imageText: 'LEAD BY EXAMPLE', caption: 'Do not tell people how to live. Show them. True leaders lead by example and inspire through action.\\n\\n#LeadByExample #TrueLeader #Inspire #v2s' },\n  { imageText: 'CRUSH YOUR DOUBTS', caption: 'Every doubt in your mind is a lie trying to keep you small. Crush it with action and prove yourself right.\\n\\n#CrushYourDoubts #Action #ProveYourself #v2s' },\n  { imageText: 'PATIENCE AND POWER', caption: 'Patience is not weakness — it is power controlled. The strongest people know exactly when to strike and when to wait.\\n\\n#PatienceAndPower #Control #Strength #v2s' },\n  { imageText: 'LIMITLESS POTENTIAL', caption: 'You have potential beyond measure. Stop putting ceilings on your dreams and let yourself reach the infinite sky.\\n\\n#LimitlessPotential #NoCeilings #InfiniteSky #v2s' },\n  { imageText: 'STAND YOUR GROUND', caption: 'When the world pushes back, plant your feet and stand firm. Pressure either breaks you or makes you a diamond.\\n\\n#StandYourGround #Pressure #Diamond #v2s' },\n  { imageText: 'DAILY VICTORY', caption: 'You do not need to win the war today. You just need to win the battle in front of you. Victory by victory.\\n\\n#DailyVictory #BattleByBattle #Winning #v2s' },\n  { imageText: 'RELENTLESS PURSUIT', caption: 'Pursue your goals with the intensity of someone who knows exactly what they want and will not stop until they get it.\\n\\n#RelentlessPursuit #Intensity #Goals #v2s' },\n  { imageText: 'REFUSE TO LOSE', caption: 'Losing is only permanent when you stop trying. Refuse to accept defeat and keep fighting until you break through.\\n\\n#RefuseToLose #Fighter #BreakThrough #v2s' },\n  { imageText: 'WALK THE TALK', caption: 'Anyone can talk about dreams. Few have the courage to walk the path. Be the one who walks the talk.\\n\\n#WalkTheTalk #Courage #Action #v2s' },\n  { imageText: 'OUTGROW YOURSELF', caption: 'The greatest competition is not with others — it is with the person you were yesterday. Outgrow yourself daily.\\n\\n#OutgrowYourself #Competition #BetterEveryDay #v2s' },\n  { imageText: 'FIRE INSIDE', caption: 'No external motivation will ever match the fire that burns within you. Protect it, fuel it, and let it consume your excuses.\\n\\n#FireInside #InternalDrive #BurnExcuses #v2s' },\n  { imageText: 'NOTHING IS GIVEN', caption: 'This life owes you nothing. Everything you want must be earned through sweat, dedication, and an iron will.\\n\\n#NothingIsGiven #Earned #IronWill #v2s' },\n  { imageText: 'CONSISTENT CHAOS', caption: 'Be consistently great in a world of chaos. While others react, you execute. While others panic, you perform.\\n\\n#ConsistentChaos #Execute #Perform #v2s' },\n  { imageText: 'RISE AND CONQUER', caption: 'Every sunrise is an invitation to conquer. Accept it with gratitude and attack the day with unmatched intensity.\\n\\n#RiseAndConquer #Sunrise #Intensity #v2s' },\n  { imageText: 'PEAK PERFORMANCE', caption: 'Peak performance is not talent. It is preparation meeting opportunity. Prepare relentlessly and opportunities will find you.\\n\\n#PeakPerformance #Preparation #Opportunity #v2s' },\n  { imageText: 'BORN TO WIN', caption: 'You were born with the heart of a champion. Stop playing small and start living up to the greatness coded in your DNA.\\n\\n#BornToWin #Champion #Greatness #v2s' },\n  { imageText: 'HUSTLE HARDER', caption: 'When you feel like slowing down, that is when you need to hustle harder. The winners are the ones who never ease up.\\n\\n#HustleHarder #Winners #KeepGoing #v2s' },\n  { imageText: 'STAY HUNGRY FOREVER', caption: 'Complacency kills dreams. Stay hungry forever, no matter how much you achieve. The best is always yet to come.\\n\\n#StayHungryForever #Complacency #BestIsYetToCome #v2s' },\n  { imageText: 'DEFINE YOUR DESTINY', caption: 'Destiny is not written in the stars. It is written in your daily habits, your choices, and your relentless determination.\\n\\n#DefineYourDestiny #Habits #Choices #v2s' },\n  { imageText: 'SAVAGE FOCUS', caption: 'Cut out the noise. Block out the negativity. Lock in with savage focus and let your work do all the talking.\\n\\n#SavageFocus #BlockNoise #LetWorkTalk #v2s' },\n  { imageText: 'PROVE YOURSELF', caption: 'You have nothing to prove to anyone except yourself. Every day is a chance to show yourself what you are truly made of.\\n\\n#ProveYourself #SelfProof #TrueStrength #v2s' },\n  { imageText: 'STRENGTH IN STRUGGLE', caption: 'Diamonds are formed under immense pressure. Your struggles are not punishments — they are preparation for something magnificent.\\n\\n#StrengthInStruggle #Diamonds #Preparation #v2s' },\n  { imageText: 'NO PLAN B', caption: 'When plan B does not exist, plan A has to work. Burn your backup plans and go all in on your vision.\\n\\n#NoPlanB #AllIn #BurnBackup #v2s' },\n  { imageText: 'BEYOND ORDINARY', caption: 'You were designed for more than an ordinary life. Step into your power and live beyond every limitation you have accepted.\\n\\n#BeyondOrdinary #StepUp #NoBoundaries #v2s' },\n  { imageText: 'UNSHAKEABLE FAITH', caption: 'When everything around you is uncertain, let your faith in yourself remain unshakeable. You are your own greatest asset.\\n\\n#UnshakeableFaith #SelfBelief #GreatestAsset #v2s' },\n  { imageText: 'LEVEL UP OR LOSE', caption: 'In a world that never stops evolving, standing still is the same as falling behind. Level up or risk losing everything.\\n\\n#LevelUpOrLose #Evolve #StayAhead #v2s' },\n  { imageText: 'GRIND NOW SHINE LATER', caption: 'The grind is not glamorous, but the shine will be. Put in the work now so your future self will thank you.\\n\\n#GrindNowShineLater #FutureSelf #PutInWork #v2s' },\n  { imageText: 'RESILIENCE IS POWER', caption: 'Fall down, get back up, repeat. Resilience is not about never falling — it is about how fast you rise each time.\\n\\n#ResilienceIsPower #GetBackUp #Rise #v2s' },\n  { imageText: 'ATTACK THE DAY', caption: 'Do not let the day happen to you. Attack it with purpose, energy, and the mindset of someone who has everything to gain.\\n\\n#AttackTheDay #Purpose #Energy #v2s' },\n  { imageText: 'EARN EVERYTHING', caption: 'Entitlement builds nothing. Everything worth having must be earned through blood, sweat, and an unbreakable commitment to your goals.\\n\\n#EarnEverything #NoEntitlement #Commitment #v2s' },\n  { imageText: 'FOCUSED AND FEARLESS', caption: 'Fear and focus cannot coexist. Choose focus. Choose action. Choose to be fearless in pursuit of what sets your soul on fire.\\n\\n#FocusedAndFearless #SoulOnFire #Action #v2s' },\n  { imageText: 'STAY READY', caption: 'Opportunity does not knock twice. Stay ready so you never have to get ready. Preparation is the mother of all success.\\n\\n#StayReady #Opportunity #Preparation #v2s' },\n  { imageText: 'DREAM EXECUTE REPEAT', caption: 'Having a dream is only step one. Execution is everything. Dream it, build it, execute it — then dream even bigger.\\n\\n#DreamExecuteRepeat #Execute #DreamBigger #v2s' },\n  { imageText: 'BORN FOR MORE', caption: 'Deep inside you know you were meant for something bigger. Stop settling and start chasing the extraordinary life you deserve.\\n\\n#BornForMore #Extraordinary #StopSettling #v2s' },\n  { imageText: 'BLESSED AND DRIVEN', caption: 'Be grateful for what you have but never stop fighting for what you want. Stay blessed, stay hungry, stay driven.\\n\\n#BlessedAndDriven #Grateful #Hungry #v2s' },\n  { imageText: 'SELF DISCIPLINE', caption: 'Freedom is not doing whatever you want. True freedom comes from the self-discipline to do what you need to do.\\n\\n#SelfDiscipline #TrueFreedom #DoWhatYouMust #v2s' },\n  { imageText: 'CHAMPIONS ADAPT', caption: 'Plans fail. Conditions change. Champions adapt. The ability to pivot and evolve is what separates good from legendary.\\n\\n#ChampionsAdapt #Pivot #Legendary #v2s' },\n  { imageText: 'ENERGY IS EVERYTHING', caption: 'Guard your energy like your life depends on it. What you feed your mind determines the quality of your entire existence.\\n\\n#EnergyIsEverything #GuardEnergy #MindFuel #v2s' }\n];\n\n// Select quote based on day of year for 365-day rotation\nconst now = new Date();\n// Set your specific launch date here (YYYY-MM-DD format):\nconst campaignStart = new Date(\"2026-05-26T00:00:00Z\");\nconst diff = now - campaignStart;\nconst oneDay = 1000 * 60 * 60 * 24;\n// Add 1 so the first day is Day 1\nlet dayOfYear = Math.floor(diff / oneDay) + 1;\nif (dayOfYear < 1) dayOfYear = 1;\nconst index = dayOfYear % quotes.length;\nconst todaysQuote = quotes[index];\n\n// Generate safe filename\nconst dateStr = now.toISOString().split('T')[0];\nconst safeText = todaysQuote.imageText\n  .toLowerCase()\n  .replace(/[^a-z0-9]+/g, '_')\n  .replace(/^_|_$/g, '')\n  .substring(0, 25);\nconst timeStr = now.toTimeString().slice(0,5).replace(':','h');\nconst fileName = `motivation_${dateStr}_${timeStr}_${safeText}.png`;\n\nreturn [\n  {\n    json: {\n      imageText: todaysQuote.imageText,\n      caption: todaysQuote.caption,\n      fileName: fileName,\n      dayOfYear: dayOfYear\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -32,
+        0
+      ],
+      "id": "02247fd1-a7e5-46a5-bc7e-84a65335f7ee",
+      "name": "Daily Quote Engine"
+    },
+    {
+      "parameters": {
+        "jsCode": "var text = $('Daily Quote Engine').first().json.imageText;\nvar fName = $('Daily Quote Engine').first().json.fileName;\nvar capRaw = $('Daily Quote Engine').first().json.caption;\nvar dayNum = $('Daily Quote Engine').first().json.dayOfYear || 1;\nvar capText = capRaw.split('\\n')[0].toUpperCase();\n\nvar W = 800, H = 800, stride = 1 + W;\nvar CT = new Int32Array(256);\nfor (var ci = 0; ci < 256; ci++) { var cv = ci; for (var ck = 0; ck < 8; ck++) cv = cv & 1 ? 0xEDB88320 ^ (cv >>> 1) : cv >>> 1; CT[ci] = cv; }\nfunction u4(v) { return Buffer.from([(v>>>24)&0xFF,(v>>>16)&0xFF,(v>>>8)&0xFF,v&0xFF]); }\nfunction mkC(t, d) {\n  var tb = Buffer.from(t), db = Buffer.isBuffer(d) ? d : Buffer.from(d), c = -1;\n  for (var i = 0; i < tb.length; i++) c = CT[(c ^ tb[i]) & 0xFF] ^ (c >>> 8);\n  for (var i = 0; i < db.length; i++) c = CT[(c ^ db[i]) & 0xFF] ^ (c >>> 8);\n  return Buffer.concat([u4(db.length), tb, db, u4((c ^ -1) >>> 0)]);\n}\nfunction zlibS(data) {\n  var M = 65535, p = [Buffer.from([0x78, 0x01])], o = 0;\n  while (o < data.length) {\n    var sz = Math.min(data.length - o, M), last = o + sz >= data.length ? 1 : 0;\n    var h = Buffer.alloc(5);\n    h[0] = last; h[1] = sz & 0xFF; h[2] = (sz >> 8) & 0xFF; h[3] = (~sz) & 0xFF; h[4] = (~sz >> 8) & 0xFF;\n    p.push(h, data.slice(o, o + sz)); o += sz;\n  }\n  var sa = 1, sb = 0;\n  for (var i = 0; i < data.length;) { var end = Math.min(i + 3000, data.length); for (var j = i; j < end; j++) { sa += data[j]; sb += sa; } sa %= 65521; sb %= 65521; i = end; }\n  p.push(u4((sb << 16) | sa)); return Buffer.concat(p);\n}\n\nvar FN = {};\nFN.A=[14,17,17,31,17,17,17]; FN.B=[30,17,17,30,17,17,30]; FN.C=[14,17,16,16,16,17,14];\nFN.D=[30,17,17,17,17,17,30]; FN.E=[31,16,16,30,16,16,31]; FN.F=[31,16,16,30,16,16,16];\nFN.G=[14,17,16,23,17,17,14]; FN.H=[17,17,17,31,17,17,17]; FN.I=[31,4,4,4,4,4,31];\nFN.J=[7,1,1,1,17,17,14]; FN.K=[17,18,20,24,20,18,17]; FN.L=[16,16,16,16,16,16,31];\nFN.M=[17,27,21,21,17,17,17]; FN.N=[17,25,21,19,17,17,17]; FN.O=[14,17,17,17,17,17,14];\nFN.P=[30,17,17,30,16,16,16]; FN.Q=[14,17,17,17,21,18,13]; FN.R=[30,17,17,30,20,18,17];\nFN.S=[14,17,16,14,1,17,14]; FN.T=[31,4,4,4,4,4,4]; FN.U=[17,17,17,17,17,17,14];\nFN.V=[17,17,17,17,10,10,4]; FN.W=[17,17,17,21,21,27,17]; FN.X=[17,17,10,4,10,17,17];\nFN.Y=[17,17,10,4,4,4,4]; FN.Z=[31,1,2,4,8,16,31];\nFN['0']=[14,17,19,21,25,17,14]; FN['1']=[4,12,4,4,4,4,31]; FN['2']=[14,17,1,6,8,16,31];\nFN['3']=[14,17,1,6,1,17,14]; FN['4']=[2,6,10,18,31,2,2]; FN['5']=[31,16,30,1,1,17,14];\nFN['6']=[14,16,16,30,17,17,14]; FN['7']=[31,1,2,4,8,8,8]; FN['8']=[14,17,17,14,17,17,14];\nFN['9']=[14,17,17,15,1,1,14]; FN[' ']=[0,0,0,0,0,0,0];\nFN['.']=[0,0,0,0,0,6,6]; FN[',']=[0,0,0,0,0,6,4]; FN['!']=[4,4,4,4,4,0,4];\nFN['-']=[0,0,0,14,0,0,0]; FN[':']=[0,6,6,0,6,6,0]; FN['?']=[14,17,2,4,4,0,4];\nFN['/']=[2,2,4,8,16,16,16];\n\nvar raw = Buffer.alloc(H * stride);\nfunction dR(x0, y0, w, h, ci) {\n  for (var dy = 0; dy < h; dy++) {\n    var yy = y0 + dy; if (yy < 0 || yy >= H) continue;\n    var base = yy * stride + 1;\n    for (var dx = 0; dx < w; dx++) { var xx = x0 + dx; if (xx >= 0 && xx < W) raw[base + xx] = ci; }\n  }\n}\nfunction dRR(x0, y0, w, h, r, ci, top, bot) {\n  for (var dy = 0; dy < h; dy++) {\n    var y = y0 + dy; if (y < 0 || y >= H) continue;\n    var ins = 0;\n    if (top && dy < r) { var dd = r - dy; ins = Math.ceil(r - Math.sqrt(r*r - dd*dd)); }\n    else if (bot && dy >= h - r) { var dd = r - (h-1-dy); ins = Math.ceil(r - Math.sqrt(r*r - dd*dd)); }\n    var base = y * stride + 1;\n    for (var x = Math.max(0, x0+ins); x < Math.min(W, x0+w-ins); x++) raw[base + x] = ci;\n  }\n}\nfunction dCirc(cx, cy, r, ci) {\n  for (var dy = -r; dy <= r; dy++) {\n    var yy = cy + dy; if (yy < 0 || yy >= H) continue;\n    var dx = Math.floor(Math.sqrt(r*r - dy*dy));\n    var base = yy * stride + 1;\n    for (var x = Math.max(0, cx-dx); x <= Math.min(W-1, cx+dx); x++) raw[base + x] = ci;\n  }\n}\nfunction dCh(ch, x0, y0, sc, ci) {\n  var rows = FN[ch] || FN[' '];\n  for (var row = 0; row < 7; row++) for (var col = 0; col < 5; col++)\n    if (rows[row] & (1 << (4 - col))) dR(x0+col*sc, y0+row*sc, sc, sc, ci);\n}\nfunction dLn(txt, cy, sc, ci) {\n  var tw = txt.length * 6 * sc - sc;\n  var x = Math.round(W/2 - tw/2);\n  for (var i = 0; i < txt.length; i++) { dCh(txt[i], x, cy, sc, ci); x += 6*sc; }\n}\nfunction wrap(txt, mw, sc) {\n  var mc = Math.floor((mw + sc) / (6*sc)), ws = txt.split(' '), ls = [], ln = '';\n  for (var i = 0; i < ws.length; i++) {\n    var t = ln ? ln + ' ' + ws[i] : ws[i];\n    if (t.length > mc && ln) { ls.push(ln); ln = ws[i]; } else { ln = t; }\n  }\n  if (ln) ls.push(ln); return ls;\n}\n\ndRR(55, 90, 690, 300, 18, 1, true, false);\ndRR(55, 390, 690, 340, 18, 2, false, true);\ndCirc(375, 50, 5, 3); dCirc(400, 50, 5, 3); dCirc(425, 50, 5, 3);\n\nvar words = text.toUpperCase().split(' ');\nvar sp = Math.max(1, Math.floor(words.length / 2));\nvar l1 = words.slice(0, sp).join(' '), l2 = words.slice(sp).join(' ');\nvar ml = Math.max(l1.length, l2.length);\nvar ts = Math.min(Math.floor(620 / (ml * 6)), 14);\nvar th = 2 * 7 * ts + ts * 2;\nvar ty = 90 + Math.round((300 - th) / 2);\n\ndLn(l1, ty, ts, 4);\ndLn(l2, ty + 7*ts + ts*2, ts, 3);\n\nvar cls = wrap(capText, 620, 3);\nfor (var i = 0; i < cls.length && i < 5; i++) dLn(cls[i], 420 + i * 30, 3, 5);\n\n// DYNAMIC DAY BUTTON\nvar dayStr = dayNum.toString();\nif (dayStr.length === 1) dayStr = '00' + dayStr;\nif (dayStr.length === 2) dayStr = '0' + dayStr;\nvar bt = 'DAY ' + dayStr + ' / 365';\nvar btw = bt.length * 18 - 3;\nvar bw = btw + 40, bh = 35, bx = Math.round(W/2 - bw/2), by2 = 640;\ndRR(bx, by2, bw, bh, 8, 3, true, true);\nvar btx = Math.round(W/2 - btw/2), bty = by2 + Math.round((bh - 21) / 2);\nfor (var i = 0; i < bt.length; i++) { dCh(bt[i], btx, bty, 3, 6); btx += 18; }\n\nvar wx = 680, wy = 700;\ndCh('V', wx, wy, 2, 7); dCh('2', wx+12, wy, 2, 7); dCh('S', wx+24, wy, 2, 7);\n\nvar comp = zlibS(raw);\nvar sig = Buffer.from([137,80,78,71,13,10,26,10]);\nvar ihd = Buffer.concat([u4(W), u4(H), Buffer.from([8, 3, 0, 0, 0])]);\n\n// DYNAMIC COLOR PALETTE\nvar acColors = [\n  [46, 204, 113], // Green\n  [52, 152, 219], // Blue\n  [155, 89, 182], // Purple\n  [231, 76, 60],  // Red\n  [241, 196, 15], // Yellow\n  [230, 126, 34], // Orange\n  [0, 255, 255],  // Cyan\n];\nvar ac = acColors[dayNum % acColors.length];\n\nvar pal = Buffer.from([\n  18,18,24,     // 0: Background\n  30,33,42,     // 1: Top Card\n  22,25,32,     // 2: Bottom Card\n  ac[0], ac[1], ac[2], // 3: Dynamic Accent\n  255,255,255,  // 4: White\n  150,155,170,  // 5: Grey text\n  18,22,28,     // 6: Button Text (Dark)\n  55,58,65      // 7: Watermark\n]);\nvar png = Buffer.concat([sig, mkC('IHDR', ihd), mkC('PLTE', pal), mkC('IDAT', comp), mkC('IEND', Buffer.alloc(0))]);\nvar b64 = png.toString('base64');\nreturn [{\n  json: { imageText: text, caption: capRaw, fileName: fName },\n  binary: { data: { data: b64, mimeType: 'image/png', fileType: 'image', fileName: fName, fileExtension: 'png' } }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        176,
+        0
+      ],
+      "id": "2ebbd193-0995-48b3-992e-e75a8760e92e",
+      "name": "Generate Poster Image"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Image is already validated and named by Generate Poster Image node\n// Just pass through and confirm binary exists\nconst item = $input.first();\n\nif (!item.binary || !item.binary.data) {\n  throw new Error('NO BINARY DATA: Poster generation failed. Check the Generate Poster Image node logs.');\n}\n\n// Confirm metadata\nitem.binary.data.fileName = $('Daily Quote Engine').first().json.fileName;\nitem.binary.data.fileExtension = 'png';\nitem.binary.data.mimeType = 'image/png';\n\nreturn [item];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        368,
+        0
+      ],
+      "id": "ef2d0662-b0de-4400-9eed-6d68af0d1b8d",
+      "name": "Sanity Check Image",
+      "alwaysOutputData": false
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://api.github.com/repos/sabarisastha/Instagram_Post/contents/images/{{ $('Daily Quote Engine').first().json.fileName }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "githubApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "application/vnd.github+json"
+            },
+            {
+              "name": "X-GitHub-Api-Version",
+              "value": "2022-11-28"
+            }
+          ]
+        },
+        "options": {
+          "response": {
+            "response": {
+              "neverError": true
+            }
+          }
+        }
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        650,
+        0
+      ],
+      "id": "sha-fetch-node-001",
+      "name": "Get File SHA",
+      "credentials": {
+        "githubApi": {
+          "id": "Trpa4IqvBYYWSzFC",
+          "name": "GitHub account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "PUT",
+        "url": "=https://api.github.com/repos/sabarisastha/Instagram_Post/contents/images/{{ $('Daily Quote Engine').first().json.fileName }}",
+        "authentication": "predefinedCredentialType",
+        "nodeCredentialType": "githubApi",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "Accept",
+              "value": "application/vnd.github+json"
+            },
+            {
+              "name": "X-GitHub-Api-Version",
+              "value": "2022-11-28"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"message\": \"Daily motivation: {{ $('Daily Quote Engine').first().json.fileName }}\",\n  \"content\": \"{{ $('Sanity Check Image').first().binary.data.data }}\",\n  \"branch\": \"main\"\n  {{ $('Get File SHA').first().json.sha ? ', \"sha\": \"' + $('Get File SHA').first().json.sha + '\"' : '' }}\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.3,
+      "position": [
+        752,
+        0
+      ],
+      "id": "6c398de3-a95c-4d92-8609-d9b7dc681835",
+      "name": "Upload to GitHub",
+      "webhookId": "65bfed11-babb-48d2-b9ad-5283df38e636",
+      "retryOnFail": true,
+      "waitBetweenTries": 3000,
+      "credentials": {
+        "githubApi": {
+          "id": "Trpa4IqvBYYWSzFC",
+          "name": "GitHub account 2"
+        }
+      },
+      "maxTries": 3
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "graphApiVersion": "v21.0",
+        "node": "17841474756386849",
+        "edge": "media",
+        "options": {
+          "queryParameters": {
+            "parameter": [
+              {
+                "name": "image_url",
+                "value": "={{ $json.content.download_url }}"
+              },
+              {
+                "name": "caption",
+                "value": "={{ $('Daily Quote Engine').first().json.caption }}"
+              },
+              {
+                "name": "media_type",
+                "value": "IMAGE"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        944,
+        0
+      ],
+      "id": "7a785268-d794-4b6f-bfb2-9b9335b76164",
+      "name": "Instagram Container ID",
+      "retryOnFail": true,
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "bPuUbDFQylhXIzm2",
+          "name": "Facebook Graph account"
+        }
+      },
+      "maxTries": 3,
+      "waitBetweenTries": 5000
+    },
+    {
+      "parameters": {
+        "unit": "seconds",
+        "amount": 15
+      },
+      "type": "n8n-nodes-base.wait",
+      "typeVersion": 1.1,
+      "position": [
+        1136,
+        0
+      ],
+      "id": "2a6fc1a9-2c95-44bf-9659-acf1c42ff753",
+      "name": "Wait",
+      "webhookId": "d7673ba1-30e0-4b8f-8c03-b80cbd78757f"
+    },
+    {
+      "parameters": {
+        "httpRequestMethod": "POST",
+        "graphApiVersion": "v21.0",
+        "node": "17841474756386849",
+        "edge": "media_publish",
+        "options": {
+          "queryParameters": {
+            "parameter": [
+              {
+                "name": "creation_id",
+                "value": "={{ $('Instagram Container ID').first().json.id }}"
+              }
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.facebookGraphApi",
+      "typeVersion": 1,
+      "position": [
+        1328,
+        0
+      ],
+      "id": "e076d42b-a0a0-428a-bd58-ea18cd4a7140",
+      "name": "Publish to Feed",
+      "credentials": {
+        "facebookGraphApi": {
+          "id": "bPuUbDFQylhXIzm2",
+          "name": "Facebook Graph account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Schedule Trigger": {
+      "main": [
+        [
+          {
+            "node": "Daily Quote Engine",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Daily Quote Engine": {
+      "main": [
+        [
+          {
+            "node": "Generate Poster Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Sanity Check Image": {
+      "main": [
+        [
+          {
+            "node": "Get File SHA",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Upload to GitHub": {
+      "main": [
+        [
+          {
+            "node": "Instagram Container ID",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Instagram Container ID": {
+      "main": [
+        [
+          {
+            "node": "Wait",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wait": {
+      "main": [
+        [
+          {
+            "node": "Publish to Feed",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Poster Image": {
+      "main": [
+        [
+          {
+            "node": "Sanity Check Image",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get File SHA": {
+      "main": [
+        [
+          {
+            "node": "Upload to GitHub",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "e2c38db5-1b0b-419b-a63e-624e5287f3b5",
+  "meta": {
+    "instanceId": "077fc99f8a0dc2ed2841922aa45fba46b793f9b92396168940de1ed7fefbb5a9"
+  },
+  "id": "YL2HErNJlUFIdT7n",
+  "tags": []
+}
